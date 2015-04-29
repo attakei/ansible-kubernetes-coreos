@@ -1,0 +1,3 @@
+[submodule "coreos-bootstrap"]
+	path = coreos-bootstrap
+	url = https://github.com/defunctzombie/ansible-coreos-bootstrap.git
