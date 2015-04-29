@@ -2,3 +2,27 @@
   gather_facts: False
   roles:
     - coreos-bootstrap
+  vars:
+    kubernetes_coreos_version: '0.0.5'
+  tasks:
+  - file: path=/opt/kubernetes/bin state=directory recurse=yes owner=core
+    sudo: yes
+  - get_url:
+      url: "https://github.com/kelseyhightower/kubernetes-coreos/releases/download/v{{ kubernetes_coreos_version }}/kubernetes-coreos-{{ kubernetes_coreos_version }}.tar.gz"
+      dest: /opt/kubernetes/
+  - command: tar -C /opt/kubernetes/bin/ -xvf /opt/kubernetes/kubernetes-coreos-{{ kubernetes_coreos_version }}.tar.gz
+  - git:
+      repo: https://github.com/kelseyhightower/kubernetes-coreos.git
+      dest: /opt/kubernetes/kubernetes-coreos
+      version: "v{{ kubernetes_coreos_version }}"
+  - shell: cp /opt/kubernetes/kubernetes-coreos/units/* /etc/systemd/system/
+    sudo: yes
+  - service: state=started name=etcd
+    sudo: yes
+  - service: state=started name={{ item }}
+    with_items:
+    - apiserver
+    - controller-manager
+    - kubelet
+    - proxy
+    sudo: yes
