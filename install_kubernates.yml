@@ -48,3 +48,12 @@
     sudo: yes
     with_items:
     - "{{ kubernetes_units.stdout_lines }}"
+  - service: state=started name=etcd
+    sudo: yes
+  - service: state=started name={{ item }}
+    with_items:
+    - apiserver
+    - controller-manager
+    - kubelet
+    - proxy
+    sudo: yes
