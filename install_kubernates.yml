@@ -27,6 +27,7 @@
       src: /tmp/kubernetes-coreos/kubernetes-coreos.git/units
       dest: ./tmp/kubernetes/
   - file: state=directory recurse=yes owner=core path=/opt/kubernetes
+  - file: state=directory recurse=yes owner=core path=/opt/bin
   - synchronize:
       src: ./tmp/kubernetes/
       dest: /opt/kubernetes/
