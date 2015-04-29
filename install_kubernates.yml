@@ -31,3 +31,20 @@
   - synchronize:
       src: ./tmp/kubernetes/
       dest: /opt/kubernetes/
+  - shell: cd /opt/kubernetes/bin && ls -d *
+    register: kubernetes_bin
+  - file:
+      state: link
+      src: /opt/kubernetes/bin/{{ item }}
+      dest: /opt/bin/{{ item }}
+    with_items:
+    - "{{ kubernetes_bin.stdout_lines }}"
+  - shell: cd /opt/kubernetes/units && ls -d *
+    register: kubernetes_units
+  - file:
+      state: link
+      src: /opt/kubernetes/units/{{ item }}
+      dest: /etc/systemd/system/{{ item }}
+    sudo: yes
+    with_items:
+    - "{{ kubernetes_units.stdout_lines }}"
