@@ -4,21 +4,25 @@
     kubernetes_coreos_version: '0.0.5'
   tasks:
   - local_action: file path=./tmp/kubernetes/bin state=directory recurse=yes
-  - local_action: file path=./tmp/kubernetes-coreos state=directory recurse=yes
+  - local_action: file path=/tmp/kubernetes-coreos state=directory recurse=yes
   - local_action:
       module: get_url
       url: "https://github.com/kelseyhightower/kubernetes-coreos/releases/download/v{{ kubernetes_coreos_version }}/kubernetes-coreos-{{ kubernetes_coreos_version }}.tar.gz"
-      dest: ./tmp/kubernetes-coreos
+      dest: /tmp/kubernetes-coreos
   - local_action:
       module: unarchive
-      src: "./tmp/kubernetes-coreos/kubernetes-coreos-{{ kubernetes_coreos_version }}.tar.gz"
-      dest: ./tmp/kubernetes-coreos
+      src: "./tmp/kubernetes-coreos-{{ kubernetes_coreos_version }}.tar.gz"
+      dest: /tmp/kubernetes-coreos
   - local_action:
       module: synchronize
-      src: ./tmp/kubernetes-coreos/kubernetes-coreos/
+      src: /tmp/kubernetes-coreos/kubernetes-coreos/
       dest: ./tmp/kubernetes/bin
-
-#  - file: state=directory recurse=yes owner=core path=/opt/kubernetes/bin
-#  - copy: dest=/opt/kubernetes/bin src={{ item }}
-#    with_items:
-#    - "{{ kubernetes_bin.stdout_lines }}"
+  - local_action:
+      module: git
+      repo: https://github.com/kelseyhightower/kubernetes-coreos.git
+      dest: /tmp/kubernetes-coreos/kubernetes-coreos.git
+      version: "v{{ kubernetes_coreos_version }}"
+  - local_action:
+      module: synchronize
+      src: /tmp/kubernetes-coreos/kubernetes-coreos.git/units
+      dest: ./tmp/kubernetes/
