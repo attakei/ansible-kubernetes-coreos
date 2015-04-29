@@ -11,7 +11,7 @@
       dest: /tmp/kubernetes-coreos
   - local_action:
       module: unarchive
-      src: "./tmp/kubernetes-coreos-{{ kubernetes_coreos_version }}.tar.gz"
+      src: "/tmp/kubernetes-coreos/kubernetes-coreos-{{ kubernetes_coreos_version }}.tar.gz"
       dest: /tmp/kubernetes-coreos
   - local_action:
       module: synchronize
@@ -26,3 +26,7 @@
       module: synchronize
       src: /tmp/kubernetes-coreos/kubernetes-coreos.git/units
       dest: ./tmp/kubernetes/
+  - file: state=directory recurse=yes owner=core path=/opt/kubernetes
+  - synchronize:
+      src: ./tmp/kubernetes/
+      dest: /opt/kubernetes/
