@@ -51,6 +51,12 @@
     sudo: yes
     with_items:
     - "{{ kubernetes_units.stdout_lines }}"
+  # Replace tmp
+  - replace:
+      dest: /opt/kubernetes/units/controller-manager.service
+      regexp: ^(.+)etcd_servers(.+)
+      replace: '\\'
+    sudo: yes
   - service: state=started name=etcd
     sudo: yes
   - service: state=started name={{ item }}
