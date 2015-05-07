@@ -27,7 +27,9 @@
       src: /tmp/kubernetes-coreos/kubernetes-coreos.git/units
       dest: ./tmp/kubernetes/
   - file: state=directory recurse=yes owner=core path=/opt/kubernetes
+    sudo: yes
   - file: state=directory recurse=yes owner=core path=/opt/bin
+    sudo: yes
   - synchronize:
       src: ./tmp/kubernetes/
       dest: /opt/kubernetes/
@@ -37,6 +39,7 @@
       state: link
       src: /opt/kubernetes/bin/{{ item }}
       dest: /opt/bin/{{ item }}
+    sudo: yes
     with_items:
     - "{{ kubernetes_bin.stdout_lines }}"
   - shell: cd /opt/kubernetes/units && ls -d *
